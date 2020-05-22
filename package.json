@@ -1,0 +1,33 @@
+{
+  "name": "@such-code/content-url-loader",
+  "version": "1.0.0",
+  "description": "Specific webpack loader to convert received data to url to emitted data or in-lined content.",
+  "main": "dist/lib/index.js",
+  "types": "dist/lib/index.d.ts",
+  "scripts": {
+    "cleanup": "del ./dist",
+    "build": "npm run cleanup; tsc",
+    "build:test": "npm run build; webpack --config=src/test/webpack.config.js --mode=development",
+    "test": "npm run build:test; node dist/test/index.js"
+  },
+  "keywords": [
+    "webpack",
+    "loader"
+  ],
+  "author": "Erik Podrez <erya14@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/such-code/content-url-loader.git"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/loader-utils": "^1.1.3",
+    "@types/node": "^12.12.42",
+    "@types/webpack": "^4.41.13",
+    "del-cli": "^3.0.1",
+    "loader-utils": "^1.4.0",
+    "typescript": "^3.9.3",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
+  }
+}
