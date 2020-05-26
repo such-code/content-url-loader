@@ -1,6 +1,6 @@
 {
   "name": "@such-code/content-url-loader",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Specific webpack loader to convert received data to url to emitted data or in-lined content.",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",

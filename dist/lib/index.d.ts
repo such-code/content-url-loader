@@ -30,7 +30,7 @@ export declare type ContentUrlLoaderOptions = {
      * Optional function to force load either as URL or as a content. `true` to load as URL, `false` for content loading
      * `null` for auto mode.
      */
-    loadAsUrl?: (($target: string, $resource: string, $context: string) => (boolean | null));
+    loadAsUrl?: (($target: string, $resource: string, $context: string, $query: string) => (boolean | null));
     /**
      * Optional function or string to wrap emitted URL. If string is provided, `{{url}}` parameter will be replaced in
      * it. Ex. `<img src="{{url}}">` will return HTML element. Function MUST return valid JS code that will be evaluated

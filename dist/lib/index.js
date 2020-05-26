@@ -63,7 +63,7 @@ const loader = function ($source, $sourceMap, $meta) {
             regExp: options.nameRegExp,
         });
         const loadAsUrl = typeof options.loadAsUrl === 'function'
-            ? options.loadAsUrl(targetUrl, this.resourcePath, this.rootContext)
+            ? options.loadAsUrl(targetUrl, this.resourcePath, this.rootContext, this.resourceQuery)
             : null;
         if (loadAsUrl === true || (loadAsUrl !== false && $source.length > options.maxSize)) {
             const targetPath = typeof options.outputPath === 'function'
