@@ -32,7 +32,7 @@ const defaultLoaderOptions: LoaderOptionsBase = {
     nameRegExp: null,
 }
 
-export type LoaderOptionsWrapper = string | (($content: string) => string);
+export type LoaderOptionsWrapper = string | (($content: string, $resource: string, $context: string, $query: string) => string);
 
 export type LoaderOptionsSerializer = 'string' | 'base64' | (($content: Buffer) => string);
 
@@ -100,9 +100,9 @@ function normalizeSerializer($serializer: LoaderOptionsSerializer): (($content: 
     return serializerString;
 }
 
-function stringToWrapper($string: string, $variable: string): (($: string) => string) {
+function stringToWrapper($string: string, $variable: string): (($: string, $resource: string, $context: string, $query: string) => string) {
     const expression = new RegExp(`{{\s*${$variable}\s*}}`, 'gi');
-    return function ($: string): string {
+    return function ($: string, ...ignore): string {
         const [beginning, ending] = $string.split(expression, 2);
         return `${JSON.stringify(beginning)} + ${$} + ${JSON.stringify(ending)}`;
     }
@@ -112,7 +112,7 @@ function normalizePath($path: string): string {
     return $path.endsWith('/') ? $path : $path + '/';
 }
 
-function normalizeContentWrapper($variable: string, $wrapper?: LoaderOptionsWrapper): (($content: string) => string) {
+function normalizeContentWrapper($variable: string, $wrapper?: LoaderOptionsWrapper): (($content: string, $resource: string, $context: string, $query: string) => string) {
     if (typeof $wrapper === 'function') {
         return $wrapper;
     } else if (typeof $wrapper === 'string') {
@@ -161,18 +161,34 @@ const loader = <webpack.loader.Loader>function(
 
             if (typeof options.publicPath === 'function') {
                 return moduleContentStart + wrapper(
-                    JSON.stringify(options.publicPath(targetUrl, this.resourcePath, this.rootContext) + targetPath)
+                    JSON.stringify(options.publicPath(targetUrl, this.resourcePath, this.rootContext) + targetPath),
+                    this.resourcePath,
+                    this.rootContext,
+                    this.resourceQuery
                 );
             } else if (typeof options.publicPath === 'string') {
                 return moduleContentStart + wrapper(
-                    JSON.stringify(normalizePath(options.publicPath) + targetPath)
+                    JSON.stringify(normalizePath(options.publicPath) + targetPath),
+                    this.resourcePath,
+                    this.rootContext,
+                    this.resourceQuery
                 );
             }
 
-            return moduleContentStart + wrapper('__webpack_public_path__ + ' + JSON.stringify(targetPath));
+            return moduleContentStart + wrapper(
+                '__webpack_public_path__ + ' + JSON.stringify(targetPath),
+                this.resourcePath,
+                this.rootContext,
+                this.resourceQuery
+            );
         } else {
             const serializedContent = JSON.stringify(normalizeSerializer(options.serialize)($source));
-            return moduleContentStart + normalizeContentWrapper('content', options.contentWrapper)(serializedContent);
+            return moduleContentStart + normalizeContentWrapper('content', options.contentWrapper)(
+                serializedContent,
+                this.resourcePath,
+                this.rootContext,
+                this.resourceQuery
+            );
         }
     } else {
         // TODO: Check what exactly is wrong.

@@ -20,7 +20,7 @@ declare type LoaderOptionsBase = {
      */
     nameRegExp: RegExp;
 };
-export declare type LoaderOptionsWrapper = string | (($content: string) => string);
+export declare type LoaderOptionsWrapper = string | (($content: string, $resource: string, $context: string, $query: string) => string);
 export declare type LoaderOptionsSerializer = 'string' | 'base64' | (($content: Buffer) => string);
 /**
  * Type definition for loader options.

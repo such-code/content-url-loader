@@ -35,19 +35,19 @@ export declare type ContentUrlLoaderOptions = {
      * Optional function to force load either as URL or as a content. `true` to load as URL, `false` for content loading
      * `null` for auto mode.
      */
-    loadAsUrl?: (($target: string, $resource: string, $context: string) => (boolean | null));
+    loadAsUrl?: (($target: string, $resource: string, $context: string, $query: string) => (boolean | null));
     /**
      * Optional function or string to wrap emitted URL. If string is provided, `{{url}}` parameter will be replaced in
      * it. Ex. `<img src="{{url}}">` will return HTML element. Function MUST return valid JS code that will be evaluated
      * at runtime. Function argument is a value with JSON.stringify() applied to it.
      */
-    urlWrapper?: string | (($content: string) => string);
+    urlWrapper?: string | (($content: string, $resource: string, $context: string, $query: string) => string);
     /**
      * Optional function or string to wrap content. String should contain `{{content}}` which will be replaced. Ex
      * `<span>{{content}}</span>` will return HTML element with a content. Function MUST return valid JS code that will
      * be evaluated.
      */
-    contentWrapper?: string | (($content: string) => string);
+    contentWrapper?: string | (($content: string, $resource: string, $context: string, $query: string) => string);
     /**
      * Custom path when resource is treated as an URL.
      */

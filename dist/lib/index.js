@@ -35,7 +35,7 @@ function normalizeSerializer($serializer) {
 }
 function stringToWrapper($string, $variable) {
     const expression = new RegExp(`{{\s*${$variable}\s*}}`, 'gi');
-    return function ($) {
+    return function ($, ...ignore) {
         const [beginning, ending] = $string.split(expression, 2);
         return `${JSON.stringify(beginning)} + ${$} + ${JSON.stringify(ending)}`;
     };
@@ -74,16 +74,16 @@ const loader = function ($source, $sourceMap, $meta) {
             this.emitFile(targetPath, $source, $sourceMap);
             const wrapper = normalizeContentWrapper('url', options.urlWrapper);
             if (typeof options.publicPath === 'function') {
-                return moduleContentStart + wrapper(JSON.stringify(options.publicPath(targetUrl, this.resourcePath, this.rootContext) + targetPath));
+                return moduleContentStart + wrapper(JSON.stringify(options.publicPath(targetUrl, this.resourcePath, this.rootContext) + targetPath), this.resourcePath, this.rootContext, this.resourceQuery);
             }
             else if (typeof options.publicPath === 'string') {
-                return moduleContentStart + wrapper(JSON.stringify(normalizePath(options.publicPath) + targetPath));
+                return moduleContentStart + wrapper(JSON.stringify(normalizePath(options.publicPath) + targetPath), this.resourcePath, this.rootContext, this.resourceQuery);
             }
-            return moduleContentStart + wrapper('__webpack_public_path__ + ' + JSON.stringify(targetPath));
+            return moduleContentStart + wrapper('__webpack_public_path__ + ' + JSON.stringify(targetPath), this.resourcePath, this.rootContext, this.resourceQuery);
         }
         else {
             const serializedContent = JSON.stringify(normalizeSerializer(options.serialize)($source));
-            return moduleContentStart + normalizeContentWrapper('content', options.contentWrapper)(serializedContent);
+            return moduleContentStart + normalizeContentWrapper('content', options.contentWrapper)(serializedContent, this.resourcePath, this.rootContext, this.resourceQuery);
         }
     }
     else {
